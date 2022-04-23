@@ -1,5 +1,5 @@
 -- Config --
-local crutchModel = -1035084591
+local crutchModel = -1035084591 -- v_med_crutch01
 local clipSet = "move_lester_CaneUp"
 local pickupAnim = {
 	dict = "pickup_object",
