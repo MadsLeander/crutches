@@ -55,13 +55,13 @@ local function CreateCrutch()
 			Citizen.Wait(10)
 		end
 	end
-	local playerPed = GetPlayerPed(-1)
+	local playerPed = PlayerPedId()
 	crutchObject = CreateObject(crutchModel, GetEntityCoords(playerPed), true, false, false)
 	AttachEntityToEntity(crutchObject, playerPed, 70, 1.18, -0.36, -0.20, -20.0, -87.0, -20.0, true, true, false, true, 1, true)
 end
 
 local function CanPlayerEquipCrutch()
-	local playerPed = GetPlayerPed(-1)
+	local playerPed = PlayerPedId()
 	local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed)
 
 	if hasWeapon then
@@ -86,7 +86,7 @@ local function UnequipCrutch()
 	end
 
 	isUsingCrutch = false
-	local playerPed = GetPlayerPed(-1)
+	local playerPed = PlayerPedId()
 	
 	if walkStyle then
 		LoadClipSet(walkStyle)
@@ -98,7 +98,7 @@ local function UnequipCrutch()
 end
 
 local function EquipCrutch()
-	local playerPed = GetPlayerPed(-1)
+	local playerPed = PlayerPedId()
 	local canEquip, msg = CanPlayerEquipCrutch()
 	if not canEquip then
 		DisplayNotification(msg)
@@ -121,7 +121,7 @@ local function EquipCrutch()
 				break
 			end
 
-			local playerPed = GetPlayerPed(-1)
+			local playerPed = PlayerPedId()
 			local isCrutchHidden = false
 			local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed)
 
@@ -141,7 +141,7 @@ local function EquipCrutch()
 				while traceObject do
 					local wait = 0
 					if DoesEntityExist(crutchObject) then
-						playerPed = GetPlayerPed(-1)
+						playerPed = PlayerPedId()
 						if not IsPedFalling(playerPed) and not IsPedRagdoll(playerPed) then
 							local dist = #(GetEntityCoords(playerPed)-GetEntityCoords(crutchObject))
 							if dist < 2.0 then
