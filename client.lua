@@ -45,7 +45,7 @@ end
 local function DisplayHelpText(msg)
 	BeginTextCommandDisplayHelp("STRING")
 	AddTextComponentSubstringPlayerName(msg)
-	EndTextCommandDisplayHelp(0, 0, 1, 50)
+	EndTextCommandDisplayHelp(0, false, true, 50)
 end
 
 local function CreateCrutch()
@@ -62,7 +62,7 @@ end
 
 local function CanPlayerEquipCrutch()
 	local playerPed = PlayerPedId()
-	local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed)
+	local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed, true)
 
 	if hasWeapon then
 		return false, localization['weapon']
@@ -93,7 +93,7 @@ local function UnequipCrutch()
 		SetPedMovementClipset(playerPed, walkStyle, 1.0)
 		RemoveClipSet(walkStyle)
 	else
-		ResetPedMovementClipset(playerPed)
+		ResetPedMovementClipset(playerPed, 1.0)
 	end
 end
 
@@ -123,7 +123,7 @@ local function EquipCrutch()
 
 			local playerPed = PlayerPedId()
 			local isCrutchHidden = false
-			local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed)
+			local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed, true)
 
 			if IsPedInAnyVehicle(playerPed, true) or hasWeapon then
 				if not isCrutchHidden then
