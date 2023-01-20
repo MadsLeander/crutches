@@ -1,4 +1,6 @@
 -- Config --
+local disableWeapons = true
+local unarmed = -1569615261 -- WEAPON_UNARMED
 local crutchModel = -1035084591 -- v_med_crutch01
 local clipSet = "move_lester_CaneUp"
 local pickupAnim = {
@@ -171,11 +173,20 @@ local function MainThread()
 
 			playerPed = PlayerPedId()
 			local isCrutchHidden = false
-			local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed, true)
+			local hasWeapon, _weaponHash = GetCurrentPedWeapon(playerPed, true)
 
 			SetPedCanPlayAmbientAnims(playerPed, false)
 
-			if IsPedInAnyVehicle(playerPed, true) or hasWeapon then
+			if hasWeapon then
+				if disableWeapons then
+					SetCurrentPedWeapon(playerPed, unarmed, true)
+				elseif not isCrutchHidden then
+					isCrutchHidden = true
+					if DoesEntityExist(crutchObject) then
+						DeleteEntity(crutchObject)
+					end
+				end
+			elseif IsPedInAnyVehicle(playerPed, true) then
 				if not isCrutchHidden then
 					isCrutchHidden = true
 					if DoesEntityExist(crutchObject) then
