@@ -100,22 +100,67 @@ local function UnequipCrutch()
 	end
 end
 
-local function EquipCrutch()
+local function TraceCrutchObject()
+	local traceObject = true
 	local playerPed = PlayerPedId()
-	local canEquip, msg = CanPlayerEquipCrutch()
-	if not canEquip then
-		DisplayNotification(msg)
-		return
+	local wait = 0
+
+	while traceObject do
+		wait = 0
+		if DoesEntityExist(crutchObject) then
+			playerPed = PlayerPedId()
+			if not IsPedFalling(playerPed) and not IsPedRagdoll(playerPed) then
+				local dist = #(GetEntityCoords(playerPed)-GetEntityCoords(crutchObject))
+				if dist < 2.0 then
+					DisplayHelpText(localization['pickup'])
+					if IsControlJustReleased(0, 38) then
+						LoadAnimDict(pickupAnim.dict)
+						TaskPlayAnim(playerPed, pickupAnim.dict, pickupAnim.name, 2.0, 2.0, -1, 0, 0, false, false, false)
+
+						local failCount = 0
+						while not IsEntityPlayingAnim(playerPed, pickupAnim.dict, pickupAnim.name, 3) and failCount < 25 do
+							failCount = failCount + 1
+							Citizen.Wait(50)
+						end
+						if failCount >= 25 then
+							ClearPedTasks(playerPed)
+						else
+							Citizen.Wait(800)
+						end
+
+						RemoveAnimDict(pickupAnim.dict)
+						DeleteEntity(crutchObject)
+						Citizen.Wait(900)
+						CreateCrutch()
+						traceObject = false
+					end
+				elseif dist < 200.0 then
+					wait = dist * 10
+				else
+					traceObject = false
+				end
+			else
+				wait = 250
+			end
+		else
+			traceObject = false
+		end
+		Citizen.Wait(wait)
 	end
+end
 
-	LoadClipSet(clipSet)
-	SetPedMovementClipset(playerPed, clipSet, 1.0)
-	RemoveClipSet(clipSet)
-
-	CreateCrutch()
-	isUsingCrutch = true
-
+local function FrameThread()
 	Citizen.CreateThread(function()
+		while true do
+			SetPedCanPlayAmbientAnims(PlayerPedId(), false)
+			Citizen.Wait(0)
+		end
+	end)
+end
+
+local function MainThread()
+	Citizen.CreateThread(function()
+		local playerPed = nil
 		local fallCount = 0
 
 		while true do
@@ -124,9 +169,11 @@ local function EquipCrutch()
 				break
 			end
 
-			local playerPed = PlayerPedId()
+			playerPed = PlayerPedId()
 			local isCrutchHidden = false
 			local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed, true)
+
+			SetPedCanPlayAmbientAnims(playerPed, false)
 
 			if IsPedInAnyVehicle(playerPed, true) or hasWeapon then
 				if not isCrutchHidden then
@@ -140,49 +187,7 @@ local function EquipCrutch()
 				CreateCrutch()
 				isCrutchHidden = false
 			elseif not IsEntityAttachedToEntity(crutchObject, playerPed) then
-				local traceObject = true
-				while traceObject do
-					local wait = 0
-					if DoesEntityExist(crutchObject) then
-						playerPed = PlayerPedId()
-						if not IsPedFalling(playerPed) and not IsPedRagdoll(playerPed) then
-							local dist = #(GetEntityCoords(playerPed)-GetEntityCoords(crutchObject))
-							if dist < 2.0 then
-								DisplayHelpText(localization['pickup'])
-								if IsControlJustReleased(0, 38) then
-									LoadAnimDict(pickupAnim.dict)
-									TaskPlayAnim(playerPed, pickupAnim.dict, pickupAnim.name, 2.0, 2.0, -1, 0, 0, false, false, false)
-
-									local failCount = 0
-									while not IsEntityPlayingAnim(playerPed, pickupAnim.dict, pickupAnim.name, 3) and failCount < 25 do
-										failCount = failCount + 1
-										Citizen.Wait(50)
-									end
-									if failCount >= 25 then
-										ClearPedTasks(playerPed)
-									else
-										Citizen.Wait(800)
-									end
-
-									RemoveAnimDict(pickupAnim.dict)
-									DeleteEntity(crutchObject)
-									Citizen.Wait(900)
-									CreateCrutch()
-									traceObject = false
-								end
-							elseif dist < 200.0 then
-								wait = dist * 10
-							else
-								traceObject = false
-							end
-						else
-							wait = 250
-						end
-					else
-						traceObject = false
-					end
-					Citizen.Wait(wait)
-				end
+				TraceCrutchObject()
 			elseif IsPedRagdoll(playerPed) or IsEntityDead(playerPed) then
 				DetachEntity(crutchObject, true, true)
 			elseif IsPedInMeleeCombat(playerPed) then
@@ -199,6 +204,26 @@ local function EquipCrutch()
 			end
 		end
 	end)
+end
+
+
+local function EquipCrutch()
+	local playerPed = PlayerPedId()
+	local canEquip, msg = CanPlayerEquipCrutch()
+	if not canEquip then
+		DisplayNotification(msg)
+		return
+	end
+
+	LoadClipSet(clipSet)
+	SetPedMovementClipset(playerPed, clipSet, 1.0)
+	RemoveClipSet(clipSet)
+
+	CreateCrutch()
+	isUsingCrutch = true
+
+	FrameThread()
+	MainThread()
 end
 
 local function ToggleCrutch()
