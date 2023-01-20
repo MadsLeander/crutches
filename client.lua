@@ -175,8 +175,6 @@ local function MainThread()
 			local isCrutchHidden = false
 			local hasWeapon, _weaponHash = GetCurrentPedWeapon(playerPed, true)
 
-			SetPedCanPlayAmbientAnims(playerPed, false)
-
 			if hasWeapon then
 				if disableWeapons then
 					SetCurrentPedWeapon(playerPed, unarmed, true)
