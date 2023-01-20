@@ -220,7 +220,6 @@ local function MainThread()
 	end)
 end
 
-
 local function EquipCrutch()
 	local playerPed = PlayerPedId()
 	local canEquip, msg = CanPlayerEquipCrutch()
