@@ -13,13 +13,16 @@ local localization = {
 	['dead'] = "You can't use a crutch while you are dead!",
 	['vehicle'] = "You can't use a crutch while you are in a vehicle!",
 	['weapon'] = "You can't use a crutch while having a weapon out!",
-	['pickup'] = "Press ~INPUT_PICKUP~ to pick up your crutch!"
+	['pickup'] = "Press ~INPUT_PICKUP~ to pick up your crutch!",
+	['forced'] = "You need to use the Crutch for a little longer!"
 }
 
 -- Variables --
 local isUsingCrutch = false
 local crutchObject = nil
 local walkStyle = nil
+local forceEquipped = false
+local endForceTime = 0
 
 -- Functions --
 local function LoadClipSet(set)
@@ -200,10 +203,29 @@ end
 
 local function ToggleCrutch()
 	if isUsingCrutch then
+		if forceEquipped then
+			DisplayNotification(localization['forced'])
+			return
+		end
 		UnequipCrutch()
 	else
 		EquipCrutch()
 	end
+end
+
+local function StartForcedTimer(time)
+	Citizen.CreateThread(function()
+		endForceTime = GetGameTimer() + time * 1000
+
+		while true do
+			Citizen.Wait(1000)
+			if endForceTime < GetGameTimer() then
+				break
+			end
+		end
+
+		forceEquipped = false
+	end)
 end
 
 -- Exports --
@@ -215,3 +237,16 @@ end)
 RegisterCommand("crutch", function(source, args, rawCommand)
 	ToggleCrutch()
 end, false)
+
+-- Events --
+-- Trigger this event on the client that should be forced to use a crutch (time is in seconds)
+AddEventHandler('crutches:forceEquip', function(state, time)
+	forceEquipped = state
+	if forceEquipped then
+		if not isUsingCrutch then
+			EquipCrutch()
+		end
+		StartForcedTimer(time)
+	end
+end)
+
