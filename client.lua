@@ -153,7 +153,7 @@ end
 
 local function FrameThread()
 	Citizen.CreateThread(function()
-		while true do
+		while isUsingCrutch do
 			SetPedCanPlayAmbientAnims(PlayerPedId(), false)
 			Citizen.Wait(0)
 		end
