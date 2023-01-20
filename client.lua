@@ -1,4 +1,5 @@
 -- Config --
+local disableSprint = true
 local disableWeapons = true
 local unarmed = -1569615261 -- WEAPON_UNARMED
 local crutchModel = -1035084591 -- v_med_crutch01
@@ -92,6 +93,10 @@ local function UnequipCrutch()
 
 	isUsingCrutch = false
 	local playerPed = PlayerPedId()
+
+	if disableSprint then
+		SetPlayerSprint(PlayerId(), true)
+	end
 	
 	if walkStyle then
 		LoadClipSet(walkStyle)
@@ -231,6 +236,10 @@ local function EquipCrutch()
 	CreateCrutch()
 	isUsingCrutch = true
 
+	if disableSprint then
+		SetPlayerSprint(PlayerId(), false)
+	end
+
 	FrameThread()
 	MainThread()
 end
@@ -283,4 +292,3 @@ AddEventHandler('crutches:forceEquip', function(state, time)
 		StartForcedTimer(time)
 	end
 end)
-
