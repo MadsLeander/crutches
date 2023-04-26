@@ -62,13 +62,14 @@ local function CreateCrutch()
 		end
 	end
 	local playerPed = PlayerPedId()
-	crutchObject = CreateObject(crutchModel, GetEntityCoords(playerPed), true, false, false)
+	local coords = GetEntityCoords(playerPed)
+	crutchObject = CreateObject(crutchModel, coords.x, coords.y, coords.z, true, true, false)
 	AttachEntityToEntity(crutchObject, playerPed, 70, 1.18, -0.36, -0.20, -20.0, -87.0, -20.0, true, true, false, true, 1, true)
 end
 
 local function CanPlayerEquipCrutch()
 	local playerPed = PlayerPedId()
-	local hasWeapon, weaponHash = GetCurrentPedWeapon(playerPed, true)
+	local hasWeapon, _weaponHash = GetCurrentPedWeapon(playerPed, true)
 
 	if hasWeapon then
 		return false, localization['weapon']
@@ -97,7 +98,7 @@ local function UnequipCrutch()
 	if disableSprint then
 		SetPlayerSprint(PlayerId(), true)
 	end
-	
+
 	if walkStyle then
 		LoadClipSet(walkStyle)
 		SetPedMovementClipset(playerPed, walkStyle, 1.0)
