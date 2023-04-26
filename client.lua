@@ -31,14 +31,14 @@ local endForceTime = 0
 local function LoadClipSet(set)
 	RequestClipSet(set)
 	while not HasClipSetLoaded(set) do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 end
 
 local function LoadAnimDict(dict)
 	RequestAnimDict(dict)
 	while not HasAnimDictLoaded(dict) do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 end
 
@@ -58,7 +58,7 @@ local function CreateCrutch()
 	if not HasModelLoaded(crutchModel) then
 		RequestModel(crutchModel)
 		while not HasModelLoaded(crutchModel) do
-			Citizen.Wait(10)
+			Wait(10)
 		end
 	end
 	local playerPed = PlayerPedId()
@@ -127,17 +127,17 @@ local function TraceCrutchObject()
 						local failCount = 0
 						while not IsEntityPlayingAnim(playerPed, pickupAnim.dict, pickupAnim.name, 3) and failCount < 25 do
 							failCount = failCount + 1
-							Citizen.Wait(50)
+							Wait(50)
 						end
 						if failCount >= 25 then
 							ClearPedTasks(playerPed)
 						else
-							Citizen.Wait(800)
+							Wait(800)
 						end
 
 						RemoveAnimDict(pickupAnim.dict)
 						DeleteEntity(crutchObject)
-						Citizen.Wait(900)
+						Wait(900)
 						CreateCrutch()
 						traceObject = false
 					end
@@ -152,26 +152,26 @@ local function TraceCrutchObject()
 		else
 			traceObject = false
 		end
-		Citizen.Wait(wait)
+		Wait(wait)
 	end
 end
 
 local function FrameThread()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while isUsingCrutch do
 			SetPedCanPlayAmbientAnims(PlayerPedId(), false)
-			Citizen.Wait(0)
+			Wait(0)
 		end
 	end)
 end
 
 local function MainThread()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local playerPed = nil
 		local fallCount = 0
 
 		while true do
-			Citizen.Wait(250)
+			Wait(250)
 			if not isUsingCrutch then
 				break
 			end
@@ -197,7 +197,7 @@ local function MainThread()
 					end
 				end
 			elseif not DoesEntityExist(crutchObject) then
-				Citizen.Wait(750)
+				Wait(750)
 				CreateCrutch()
 				isCrutchHidden = false
 			elseif not IsEntityAttachedToEntity(crutchObject, playerPed) then
@@ -205,7 +205,7 @@ local function MainThread()
 			elseif IsPedRagdoll(playerPed) or IsEntityDead(playerPed) then
 				DetachEntity(crutchObject, true, true)
 			elseif IsPedInMeleeCombat(playerPed) then
-				Citizen.Wait(400)
+				Wait(500)
 				DetachEntity(crutchObject, true, true)
 			elseif IsPedFalling(playerPed) then
 				fallCount = fallCount + 1
@@ -256,11 +256,11 @@ local function ToggleCrutch()
 end
 
 local function StartForcedTimer(time)
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		endForceTime = GetGameTimer() + time * 1000
 
 		while true do
-			Citizen.Wait(1000)
+			Wait(1000)
 			if endForceTime < GetGameTimer() then
 				break
 			end
