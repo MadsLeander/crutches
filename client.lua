@@ -1,7 +1,7 @@
 -- Config --
 local disableSprint = true
 local disableWeapons = true
-local unarmed = -1569615261 -- WEAPON_UNARMED
+local unarmed = `WEAPON_UNARMED`
 local crutchModel = `prop_mads_crutch01`
 local clipSet = "move_lester_CaneUp"
 local pickupAnim = {
