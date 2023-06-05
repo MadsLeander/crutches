@@ -292,3 +292,14 @@ AddEventHandler('crutches:forceEquip', function(state, time)
 		StartForcedTimer(time)
 	end
 end)
+
+local currentResource = GetCurrentResourceName()
+AddEventHandler('onResourceStop', function(resource)
+    if resource ~= currentResource then
+        return
+    end
+
+    if isUsingCrutch then
+		UnequipCrutch()
+	end
+end)
