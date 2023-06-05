@@ -95,14 +95,13 @@ end
 
 local function UnequipCrutch()
 	DeleteCrutchObject()
-
 	isUsingCrutch = false
-	local playerPed = PlayerPedId()
 
 	if disableSprint then
 		SetPlayerSprint(PlayerId(), true)
 	end
 
+	local playerPed = PlayerPedId()
 	if walkStyle then
 		LoadClipSet(walkStyle)
 		SetPedMovementClipset(playerPed, walkStyle, 1.0)
