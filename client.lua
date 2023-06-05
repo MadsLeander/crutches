@@ -87,10 +87,14 @@ local function CanPlayerEquipCrutch()
 	return true
 end
 
-local function UnequipCrutch()
+local function DeleteCrutchObject()
 	if DoesEntityExist(crutchObject) then
 		DeleteEntity(crutchObject)
 	end
+end
+
+local function UnequipCrutch()
+	DeleteCrutchObject()
 
 	isUsingCrutch = false
 	local playerPed = PlayerPedId()
@@ -137,7 +141,7 @@ local function TraceCrutchObject()
 						end
 
 						RemoveAnimDict(pickupAnim.dict)
-						DeleteEntity(crutchObject)
+						DeleteCrutchObject()
 						Wait(900)
 						CreateCrutch()
 						traceObject = false
@@ -186,16 +190,12 @@ local function MainThread()
 					SetCurrentPedWeapon(playerPed, unarmed, true)
 				elseif not isCrutchHidden then
 					isCrutchHidden = true
-					if DoesEntityExist(crutchObject) then
-						DeleteEntity(crutchObject)
-					end
+					DeleteCrutchObject()
 				end
 			elseif IsPedInAnyVehicle(playerPed, true) then
 				if not isCrutchHidden then
 					isCrutchHidden = true
-					if DoesEntityExist(crutchObject) then
-						DeleteEntity(crutchObject)
-					end
+					DeleteCrutchObject()
 				end
 			elseif not DoesEntityExist(crutchObject) then
 				Wait(750)
