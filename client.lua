@@ -287,6 +287,10 @@ exports('UnequipCrutch', function()
 	end
 end)
 
+exports('ToggleCrutch', function()
+	ToggleCrutch()
+end)
+
 
 -- Commands --
 RegisterCommand("crutch", function(source, args, rawCommand)
@@ -315,6 +319,10 @@ AddEventHandler('crutches:unequip', function()
 	if isUsingCrutch then
 		UnequipCrutch()
 	end
+end)
+
+AddEventHandler('crutches:toggleCrutch', function()
+	ToggleCrutch()
 end)
 
 local currentResource = GetCurrentResourceName()
