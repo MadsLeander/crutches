@@ -275,6 +275,19 @@ exports('SetWalkStyle', function(walk)
 	walkStyle = walk
 end)
 
+exports('EquipCrutch', function()
+	if not isUsingCrutch then
+		EquipCrutch()
+	end
+end)
+
+exports('UnequipCrutch', function()
+	if isUsingCrutch then
+		UnequipCrutch()
+	end
+end)
+
+
 -- Commands --
 RegisterCommand("crutch", function(source, args, rawCommand)
 	ToggleCrutch()
