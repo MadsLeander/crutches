@@ -305,6 +305,18 @@ AddEventHandler('crutches:forceEquip', function(state, time)
 	end
 end)
 
+AddEventHandler('crutches:equip', function()
+	if not isUsingCrutch then
+		EquipCrutch()
+	end
+end)
+
+AddEventHandler('crutches:unequip', function()
+	if isUsingCrutch then
+		UnequipCrutch()
+	end
+end)
+
 local currentResource = GetCurrentResourceName()
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= currentResource then
