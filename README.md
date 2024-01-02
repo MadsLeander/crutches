@@ -1,5 +1,5 @@
 # crutches
-Crutches is a small (218 lines of code) standalone script that allows people to use a crutch in their right arm. The crutch automatically gets hidden in vehicles and when you take out weapons. If you fall or punch someone you’ll drop your crutch, but don’t be afraid, you can always just pick it up again.
+Crutches is a small (337 lines of code) standalone script that allows people to use a crutch in their right arm. The crutch automatically gets hidden in vehicles and when you take out weapons. If you fall or punch someone you’ll drop your crutch, but don’t be afraid, you can always just pick it up again.
 
 The script was just made for fun, so the code could probably have been written somewhat better, however it is more than good enough for its purpose. The script runs at 0.0 ms when not using a crutch and anywhere from 0.0 to 0.4 ms when using it (usually 0.1 ms unless you drop the crutch).
 
